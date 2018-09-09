@@ -16,5 +16,9 @@
     "nodemon": "^1.18.4",
     "ts-node": "^7.0.1",
     "typescript": "^3.0.3"
+  },
+  "dependencies": {
+    "@types/es6-promise": "^3.3.0",
+    "rxjs": "^6.3.2"
   }
 }
