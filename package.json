@@ -1,0 +1,20 @@
+{
+  "name": "rxjs-demo",
+  "version": "1.0.0",
+  "description": "RxJS-demo",
+  "main": "index.js",
+  "scripts": {
+    "compile": "tsc src/*.ts --outDir dist",
+    "clear": "rm dist/*.js",
+    "start": "npm run build:live",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.18.4",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.0.3"
+  }
+}
