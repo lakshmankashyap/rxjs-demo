@@ -39,21 +39,21 @@ console.log(iteratorLazy.next());
 console.log(iteratorLazy.next());
 console.timeEnd('lazy eval1');
 
-// console.time('observable example');
-// let observer = Observable.create(function(observer) {
-//   observer.next('Jerry');
-//   observer.next('Anna');
-//   setTimeout(() => {
-//     observer.next('RxJS 30 days!');
-//   }, 30);
-// });
+console.time('observable example');
+let observableObj = Observable.create(function(observer) {
+  observer.next('Jerry');
+  observer.next('Anna');
+  setTimeout(() => {
+    observer.next('RxJS 30- days!');
+  }, 30);
+});
 
-// console.log('start');
-// observer.subscribe((value)=>{
-//   console.log(value);
-// });
-// console.log('end');
-// console.timeEnd('observable example');
+console.log('start');
+observableObj.subscribe((value)=>{
+  console.log(value);
+});
+console.log('end');
+console.timeEnd('observable example');
 
 
 // console.time('Observer Example');
@@ -96,3 +96,25 @@ setTimeout(()=>{
   subscription.unsubscribe();
 }, 5000);
 console.timeEnd('Observer Example');
+
+console.time('observable operator');
+let people = of('Json', 'Michael');
+function map(source, callback) {
+  return Observable.create((observer)=>{
+    return source.subscribe(
+      (value) => {
+        try {
+          observer.next(callback(value));
+        } catch(e) {
+          observer.error(e);
+        }
+      },
+      (err) => {observer.error(err);},
+      () => {observer.complete();}
+    );
+  });
+}
+
+let helloPeople = map(people, (item) => item + 'Hello~');
+helloPeople.subscribe(console.log);
+console.timeEnd('observable operator');
