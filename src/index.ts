@@ -1,8 +1,8 @@
 import Producer from './observerPattern/Producer';
 import IteratorFromArray from './iteratorPattern/IteratorFromArray';
 import {getNumbers} from './lazyEval/getNumbers';
-import { Observable, of, from, interval, timer, Subject, BehaviorSubject, ReplaySubject, AsyncSubject} from 'rxjs';
-import {take, multicast, map as Rmap, refCount, publish, share} from 'rxjs/operators';
+import { Observable, of, from, interval, timer, Subject, BehaviorSubject, ReplaySubject, AsyncSubject, asyncScheduler} from 'rxjs';
+import {take, multicast, map as Rmap, refCount, publish, share, observeOn} from 'rxjs/operators';
 import {Promise} from 'es6-promise';
 console.time('Observable example');
 let egghead = new Producer();
@@ -287,19 +287,41 @@ console.timeEnd('observable operator');
 
 // console.timeEnd('share subscription example');
 
-console.time('side effect example');
-let sourceSideEff: any = interval(1000).pipe(take(7))
-.pipe(Rmap(x=>Math.random())).pipe(share());
-let observerA7 = {
-  next: value => console.log(`A7 next: ${value}`),
-  error: error => console.log(`A7 error: ${error}`),
-  complete: () => console.log('A7 complete')
-};
-let observerB7 = {
-  next: value => console.log(`B7 next: ${value}`),
-  error: error => console.log(`B7 error: ${error}`),
-  complete: () => console.log('B7 complete')
-};
-sourceSideEff.subscribe(observerA7);
-sourceSideEff.subscribe(observerB7);
-console.timeEnd('side effect example');
+// console.time('side effect example');
+// let sourceSideEff: any = interval(1000).pipe(take(7))
+// .pipe(Rmap(x=>Math.random())).pipe(share());
+// let observerA7 = {
+//   next: value => console.log(`A7 next: ${value}`),
+//   error: error => console.log(`A7 error: ${error}`),
+//   complete: () => console.log('A7 complete')
+// };
+// let observerB7 = {
+//   next: value => console.log(`B7 next: ${value}`),
+//   error: error => console.log(`B7 error: ${error}`),
+//   complete: () => console.log('B7 complete')
+// };
+// sourceSideEff.subscribe(observerA7);
+// sourceSideEff.subscribe(observerB7);
+// console.timeEnd('side effect example');
+
+console.time('scheduler Example');
+let observableObj8 = Observable.create((observer)=>{
+  observer.next(1);
+  observer.next(2);
+  observer.next(3);
+  observer.complete()
+}).pipe(observeOn(asyncScheduler));
+console.log('before subscribe');
+observableObj8.subscribe({
+  next: (value) => {
+    console.log(`got value: ${value}`);
+  },
+  error: (err) => {
+    console.error(`got error: ${err}`);
+  },
+  complete: () => {
+    console.log('done');
+  }
+});
+console.log('after subscribe'); 
+console.timeEnd('scheduler Example');
