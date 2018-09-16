@@ -1,7 +1,8 @@
 import Producer from './observerPattern/Producer';
 import IteratorFromArray from './iteratorPattern/IteratorFromArray';
 import {getNumbers} from './lazyEval/getNumbers';
-import { Observable, of, from, interval, timer } from 'rxjs';
+import { Observable, of, from, interval, timer, Subject } from 'rxjs';
+import {take} from 'rxjs/operators';
 import {Promise} from 'es6-promise';
 console.time('Observable example');
 let egghead = new Producer();
@@ -43,9 +44,6 @@ console.time('observable example');
 let observableObj = Observable.create(function(observer) {
   observer.next('Jerry');
   observer.next('Anna');
-  setTimeout(() => {
-    observer.next('RxJS 30- days!');
-  }, 30);
 });
 
 console.log('start');
@@ -118,3 +116,24 @@ function map(source, callback) {
 let helloPeople = map(people, (item) => item + 'Hello~');
 helloPeople.subscribe(console.log);
 console.timeEnd('observable operator');
+
+
+console.time('multiple subscribe case');
+let source = interval(1000).pipe(take(3));
+let observerA = {
+  next: value => console.log(`A next: ${value}`),
+  error: error => console.log(`A error: ${error}`),
+  complete: () => console.log('A complete')
+};
+let observerB = {
+  next: value => console.log(`B next: ${value}`),
+  error: error => console.log(`B error: ${error}`),
+  complete: () => console.log('B complete')
+};
+let subjectObj = new Subject();
+subjectObj.subscribe(observerA);
+source.subscribe(subjectObj);
+setTimeout(()=> {
+  subjectObj.subscribe(observerB);
+}, 1000);
+console.timeEnd('multiple subscribe case');
