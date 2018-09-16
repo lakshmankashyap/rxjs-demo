@@ -1,8 +1,8 @@
 import Producer from './observerPattern/Producer';
 import IteratorFromArray from './iteratorPattern/IteratorFromArray';
 import {getNumbers} from './lazyEval/getNumbers';
-import { Observable, of, from, interval, timer, Subject, BehaviorSubject, ReplaySubject, AsyncSubject } from 'rxjs';
-import {take} from 'rxjs/operators';
+import { Observable, of, from, interval, timer, Subject, BehaviorSubject, ReplaySubject, AsyncSubject} from 'rxjs';
+import {take, multicast, map as Rmap, refCount, publish, share} from 'rxjs/operators';
 import {Promise} from 'es6-promise';
 console.time('Observable example');
 let egghead = new Producer();
@@ -185,25 +185,51 @@ console.timeEnd('observable operator');
 
 
 
-console.time('Async subject example');
+// console.time('Async subject example');
 
-let observerA3 = {
-  next: value => console.log(`A3 next: ${value}`),
-  error: error => console.log(`A3 error: ${error}`),
-  complete: () => console.log('A3 complete')
+// let observerA3 = {
+//   next: value => console.log(`A3 next: ${value}`),
+//   error: error => console.log(`A3 error: ${error}`),
+//   complete: () => console.log('A3 complete')
+// };
+// let observerB3 = {
+//   next: value => console.log(`B3 next: ${value}`),
+//   error: error => console.log(`B3 error: ${error}`),
+//   complete: () => console.log('B3 complete')
+// };
+// let asyncSubObj = new AsyncSubject();
+// asyncSubObj.subscribe(observerA3);
+// asyncSubObj.next(1);
+// asyncSubObj.next(2);
+// asyncSubObj.next(3);
+// asyncSubObj.complete();
+// setTimeout(()=> {
+//   asyncSubObj.subscribe(observerB3);
+// }, 3000);
+// console.timeEnd('Async subject example');
+
+console.time('multicast refCount subscription example');
+let sourceMulti: any = interval(1000).pipe(take(7))
+.pipe(Rmap(x=>{console.log(`send: ${x}`); return x;})).pipe(multicast(new Subject()))
+.pipe(refCount());
+let observerA4 = {
+  next: value => console.log(`A4 next: ${value}`),
+  error: error => console.log(`A4 error: ${error}`),
+  complete: () => console.log('A4 complete')
 };
-let observerB3 = {
-  next: value => console.log(`B3 next: ${value}`),
-  error: error => console.log(`B3 error: ${error}`),
-  complete: () => console.log('B3 complete')
+let observerB4 = {
+  next: value => console.log(`B4 next: ${value}`),
+  error: error => console.log(`B4 error: ${error}`),
+  complete: () => console.log('B4 complete')
 };
-let asyncSubObj = new AsyncSubject();
-asyncSubObj.subscribe(observerA3);
-asyncSubObj.next(1);
-asyncSubObj.next(2);
-asyncSubObj.next(3);
-asyncSubObj.complete();
+
+let subscribptionA4 = sourceMulti.subscribe(observerA4);
+let subscriptionB4;
 setTimeout(()=> {
-  asyncSubObj.subscribe(observerB3);
-}, 3000);
-console.timeEnd('Async subject example');
+  subscriptionB4 = sourceMulti.subscribe(observerB4);
+}, 1000);
+setTimeout(()=> {
+  subscribptionA4.unsubscribe();
+  subscriptionB4.unsubscribe();
+}, 5000);
+console.timeEnd('multicast refCount subscription example');
