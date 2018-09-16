@@ -1,7 +1,7 @@
 import Producer from './observerPattern/Producer';
 import IteratorFromArray from './iteratorPattern/IteratorFromArray';
 import {getNumbers} from './lazyEval/getNumbers';
-import { Observable, of, from, interval, timer, Subject } from 'rxjs';
+import { Observable, of, from, interval, timer, Subject, BehaviorSubject } from 'rxjs';
 import {take} from 'rxjs/operators';
 import {Promise} from 'es6-promise';
 console.time('Observable example');
@@ -118,22 +118,44 @@ helloPeople.subscribe(console.log);
 console.timeEnd('observable operator');
 
 
-console.time('multiple subscribe case');
-let source = interval(1000).pipe(take(3));
-let observerA = {
-  next: value => console.log(`A next: ${value}`),
-  error: error => console.log(`A error: ${error}`),
-  complete: () => console.log('A complete')
+// console.time('multiple subscribe case');
+// let source = interval(1000).pipe(take(3));
+// let observerA = {
+//   next: value => console.log(`A next: ${value}`),
+//   error: error => console.log(`A error: ${error}`),
+//   complete: () => console.log('A complete')
+// };
+// let observerB = {
+//   next: value => console.log(`B next: ${value}`),
+//   error: error => console.log(`B error: ${error}`),
+//   complete: () => console.log('B complete')
+// };
+// let subjectObj = new Subject();
+// subjectObj.subscribe(observerA);
+// source.subscribe(subjectObj);
+// setTimeout(()=> {
+//   subjectObj.subscribe(observerB);
+// }, 1000);
+// console.timeEnd('multiple subscribe case');
+
+console.time('behavior subject example');
+
+let observerA1 = {
+  next: value => console.log(`A1 next: ${value}`),
+  error: error => console.log(`A1 error: ${error}`),
+  complete: () => console.log('A1 complete')
 };
-let observerB = {
-  next: value => console.log(`B next: ${value}`),
-  error: error => console.log(`B error: ${error}`),
-  complete: () => console.log('B complete')
+let observerB1 = {
+  next: value => console.log(`B1 next: ${value}`),
+  error: error => console.log(`B1 error: ${error}`),
+  complete: () => console.log('B1 complete')
 };
-let subjectObj = new Subject();
-subjectObj.subscribe(observerA);
-source.subscribe(subjectObj);
+let behaviorSubObj = new BehaviorSubject(0);
+behaviorSubObj.subscribe(observerA1);
+behaviorSubObj.next(1);
+behaviorSubObj.next(2);
+behaviorSubObj.next(3);
 setTimeout(()=> {
-  subjectObj.subscribe(observerB);
+  behaviorSubObj.subscribe(observerB1);
 }, 1000);
-console.timeEnd('multiple subscribe case');
+console.timeEnd('behavior subject example');
