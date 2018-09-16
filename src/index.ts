@@ -208,28 +208,98 @@ console.timeEnd('observable operator');
 // }, 3000);
 // console.timeEnd('Async subject example');
 
-console.time('multicast refCount subscription example');
-let sourceMulti: any = interval(1000).pipe(take(7))
-.pipe(Rmap(x=>{console.log(`send: ${x}`); return x;})).pipe(multicast(new Subject()))
-.pipe(refCount());
-let observerA4 = {
-  next: value => console.log(`A4 next: ${value}`),
-  error: error => console.log(`A4 error: ${error}`),
-  complete: () => console.log('A4 complete')
-};
-let observerB4 = {
-  next: value => console.log(`B4 next: ${value}`),
-  error: error => console.log(`B4 error: ${error}`),
-  complete: () => console.log('B4 complete')
-};
+// console.time('multicast refCount subscription example');
+// let sourceMulti: any = interval(1000).pipe(take(7))
+// .pipe(Rmap(x=>{console.log(`send: ${x}`); return x;})).pipe(multicast(new Subject()))
+// .pipe(refCount());
+// let observerA4 = {
+//   next: value => console.log(`A4 next: ${value}`),
+//   error: error => console.log(`A4 error: ${error}`),
+//   complete: () => console.log('A4 complete')
+// };
+// let observerB4 = {
+//   next: value => console.log(`B4 next: ${value}`),
+//   error: error => console.log(`B4 error: ${error}`),
+//   complete: () => console.log('B4 complete')
+// };
 
-let subscribptionA4 = sourceMulti.subscribe(observerA4);
-let subscriptionB4;
-setTimeout(()=> {
-  subscriptionB4 = sourceMulti.subscribe(observerB4);
-}, 1000);
-setTimeout(()=> {
-  subscribptionA4.unsubscribe();
-  subscriptionB4.unsubscribe();
-}, 5000);
-console.timeEnd('multicast refCount subscription example');
+// let subscribptionA4 = sourceMulti.subscribe(observerA4);
+// let subscriptionB4;
+// setTimeout(()=> {
+//   subscriptionB4 = sourceMulti.subscribe(observerB4);
+// }, 1000);
+// setTimeout(()=> {
+//   subscribptionA4.unsubscribe();
+//   subscriptionB4.unsubscribe();
+// }, 5000);
+// console.timeEnd('multicast refCount subscription example');
+
+// console.time('publish refCount subscription example');
+// let sourceMulti: any = interval(1000).pipe(take(7))
+// .pipe(Rmap(x=>{console.log(`send: ${x}`); return x;})).pipe(publish())
+// .pipe(refCount());
+// let observerA5 = {
+//   next: value => console.log(`A5 next: ${value}`),
+//   error: error => console.log(`A5 error: ${error}`),
+//   complete: () => console.log('A5 complete')
+// };
+// let observerB5 = {
+//   next: value => console.log(`B5 next: ${value}`),
+//   error: error => console.log(`B5 error: ${error}`),
+//   complete: () => console.log('B5 complete')
+// };
+
+// let subscribptionA5 = sourceMulti.subscribe(observerA5);
+// let subscriptionB5;
+// setTimeout(()=> {
+//   subscriptionB5 = sourceMulti.subscribe(observerB5);
+// }, 1000);
+// setTimeout(()=> {
+//   subscribptionA5.unsubscribe();
+//   subscriptionB5.unsubscribe();
+// }, 5000);
+// console.timeEnd('publish refCount subscription example');
+
+
+// console.time('share subscription example');
+// let sourceMulti: any = interval(1000).pipe(take(7))
+// .pipe(Rmap(x=>{console.log(`send: ${x}`); return x;})).pipe(share());
+// let observerA6 = {
+//   next: value => console.log(`A6 next: ${value}`),
+//   error: error => console.log(`A6 error: ${error}`),
+//   complete: () => console.log('A6 complete')
+// };
+// let observerB6 = {
+//   next: value => console.log(`B6 next: ${value}`),
+//   error: error => console.log(`B6 error: ${error}`),
+//   complete: () => console.log('B6 complete')
+// };
+
+// let subscribptionA6 = sourceMulti.subscribe(observerA6);
+// let subscriptionB6;
+// setTimeout(()=> {
+//   subscriptionB6 = sourceMulti.subscribe(observerB6);
+// }, 1000);
+// setTimeout(()=> {
+//   subscribptionA6.unsubscribe();
+//   subscriptionB6.unsubscribe();
+// }, 5000);
+
+// console.timeEnd('share subscription example');
+
+console.time('side effect example');
+let sourceSideEff: any = interval(1000).pipe(take(7))
+.pipe(Rmap(x=>Math.random())).pipe(share());
+let observerA7 = {
+  next: value => console.log(`A7 next: ${value}`),
+  error: error => console.log(`A7 error: ${error}`),
+  complete: () => console.log('A7 complete')
+};
+let observerB7 = {
+  next: value => console.log(`B7 next: ${value}`),
+  error: error => console.log(`B7 error: ${error}`),
+  complete: () => console.log('B7 complete')
+};
+sourceSideEff.subscribe(observerA7);
+sourceSideEff.subscribe(observerB7);
+console.timeEnd('side effect example');
