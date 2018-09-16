@@ -1,7 +1,7 @@
 import Producer from './observerPattern/Producer';
 import IteratorFromArray from './iteratorPattern/IteratorFromArray';
 import {getNumbers} from './lazyEval/getNumbers';
-import { Observable, of, from, interval, timer, Subject, BehaviorSubject } from 'rxjs';
+import { Observable, of, from, interval, timer, Subject, BehaviorSubject, ReplaySubject, AsyncSubject } from 'rxjs';
 import {take} from 'rxjs/operators';
 import {Promise} from 'es6-promise';
 console.time('Observable example');
@@ -138,24 +138,72 @@ console.timeEnd('observable operator');
 // }, 1000);
 // console.timeEnd('multiple subscribe case');
 
-console.time('behavior subject example');
+// console.time('behavior subject example');
 
-let observerA1 = {
-  next: value => console.log(`A1 next: ${value}`),
-  error: error => console.log(`A1 error: ${error}`),
-  complete: () => console.log('A1 complete')
+// let observerA1 = {
+//   next: value => console.log(`A1 next: ${value}`),
+//   error: error => console.log(`A1 error: ${error}`),
+//   complete: () => console.log('A1 complete')
+// };
+// let observerB1 = {
+//   next: value => console.log(`B1 next: ${value}`),
+//   error: error => console.log(`B1 error: ${error}`),
+//   complete: () => console.log('B1 complete')
+// };
+// let behaviorSubObj = new BehaviorSubject(0);
+// behaviorSubObj.subscribe(observerA1);
+// behaviorSubObj.next(1);
+// behaviorSubObj.next(2);
+// behaviorSubObj.next(3);
+// setTimeout(()=> {
+//   behaviorSubObj.subscribe(observerB1);
+// }, 1000);
+// console.timeEnd('behavior subject example');
+
+
+// console.time('Replay subject example');
+
+// let observerA2 = {
+//   next: value => console.log(`A2 next: ${value}`),
+//   error: error => console.log(`A2 error: ${error}`),
+//   complete: () => console.log('A2 complete')
+// };
+// let observerB2 = {
+//   next: value => console.log(`B2 next: ${value}`),
+//   error: error => console.log(`B2 error: ${error}`),
+//   complete: () => console.log('B2 complete')
+// };
+// let replaySubObj = new ReplaySubject(2);
+// replaySubObj.subscribe(observerA2);
+// replaySubObj.next(1);
+// replaySubObj.next(2);
+// replaySubObj.next(3);
+// setTimeout(()=> {
+//   replaySubObj.subscribe(observerB2);
+// }, 3000);
+// console.timeEnd('Replay subject example');
+
+
+
+console.time('Async subject example');
+
+let observerA3 = {
+  next: value => console.log(`A3 next: ${value}`),
+  error: error => console.log(`A3 error: ${error}`),
+  complete: () => console.log('A3 complete')
 };
-let observerB1 = {
-  next: value => console.log(`B1 next: ${value}`),
-  error: error => console.log(`B1 error: ${error}`),
-  complete: () => console.log('B1 complete')
+let observerB3 = {
+  next: value => console.log(`B3 next: ${value}`),
+  error: error => console.log(`B3 error: ${error}`),
+  complete: () => console.log('B3 complete')
 };
-let behaviorSubObj = new BehaviorSubject(0);
-behaviorSubObj.subscribe(observerA1);
-behaviorSubObj.next(1);
-behaviorSubObj.next(2);
-behaviorSubObj.next(3);
+let asyncSubObj = new AsyncSubject();
+asyncSubObj.subscribe(observerA3);
+asyncSubObj.next(1);
+asyncSubObj.next(2);
+asyncSubObj.next(3);
+asyncSubObj.complete();
 setTimeout(()=> {
-  behaviorSubObj.subscribe(observerB1);
-}, 1000);
-console.timeEnd('behavior subject example');
+  asyncSubObj.subscribe(observerB3);
+}, 3000);
+console.timeEnd('Async subject example');
